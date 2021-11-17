@@ -11,8 +11,11 @@
   <div class="nav">
     <p><a href="/">Home</a> > <a href="">Create Account</a></p>
   </div>
-  {% if not ok %}
+  {% if ok == 0 %}
     <p>Sorry! Account with provided email already exists. Please enter another email</p>
+  {% endif %}
+  {% if ok == 2%}
+    <p>Sorry! You can't create seller's account. Please contact administrator</p>
   {% endif %}
   <form action="" method="POST" onsubmit="return checkEqual()">
     <h2>Create New Account:</h2>
@@ -30,22 +33,22 @@
       <td>EMAIL :</td><td><input type="email" name="email" required></td>
     </tr>
     <tr>
-      <td>PHONE :</td><td><input type="tel" name="phone" required></td>
+      <td>PHONE :</td><td><input type="tel" name="phone"></td>
     </tr>
     <tr>
       <td><b>ADDRESS:</b></td>
     </tr>
     <tr>
-      <td>LANDMARK/AREA:</td><td><input type="text" name="area" required></td>
+      <td>ADDRESS LINE 1 :</td><td><input type="text" name="area" required></td>
     </tr>
     <tr>
-      <td>LOCALITY :</td><td><input type="text" name="locality" required></td>
+      <td>ADDRESS LINE 2 :</td><td><input type="text" name="locality" ></td>
     </tr>
     <tr>
       <td>CITY :</td><td><input type="text" name="city" required></td>
     </tr>
     <tr>
-      <td>STATE :</td><td><input type="text" name="state" required></td>
+      <td>STATE/PROVINCE/REGION :</td><td><input type="text" name="state"></td>
     </tr>
     <tr>
       <td>COUNTRY :</td><td><input type="text" name="country" required></td>

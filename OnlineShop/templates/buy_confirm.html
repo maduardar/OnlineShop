@@ -23,13 +23,13 @@
       <td>{{cnt['val']}}</td>
       <td>{{item[0]}}</td>
       <td>{{item[1]}}</td>
-      <td>₹ {{item[2]}}</td>
+      <td>£ {{item[2]}}</td>
     </tr>
     {%if cnt.update({'val':(cnt['val']+1)}) %}{% endif %}
     {% endfor %}
     </table>
     <table>
-      <tr><th>TOTAL AMOUNT :</th><th>₹ {{total}}</th></tr>
+      <tr><th>TOTAL AMOUNT :</th><th>£ {{total}}</th></tr>
     </table>
     <input type="submit" name="choice" value="PLACE ORDER" style="display:block; margin-left:auto; margin-right:auto; margin-top:1vw;">
     <input type="submit" name="choice" value="CANCEL" style="display:block; margin-left:auto; margin-right:auto; margin-top:1vw;">

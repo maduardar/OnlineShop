@@ -25,14 +25,15 @@
    <h3><input type="radio" value="by category" name="search method">Search by category</h3>
    <select name="category">
     <option value="" disabled selected>SELECT CATEGORY</option>
-    <option value="Electronics and Tech">Electronics and Tech</option>
-    <option value="Fashion">Fashion</option>
-    <option value="Educational Utilities">Educational Utilities</option>
-    <option value="Entertainment and Recreation">Entertainment and Recreation</option>
-    <option value="Food and Groceries">Food and Groceries</option>
-    <option value="Daily Utilities">Daily Utilities</option>
-    <option value="Sports">Sports</option>
-    <option value="Luggage">Luggage</option>
+    <option value="Nutritious Formulations">Nutritious Formulations</option>
+    <option value="Groceries">Groceries</option>
+    <option value="Latest">Latest</option>
+    <option value="Somarasa">Somarasa</option>
+    <option value="Essential Oil & Vaporisers">Essential Oil & Vaporisers</option>
+    <option value="Blankets and Shawls">Blankets and Shawls</option>
+    <option value="Oils">Oils</option>
+    <option value="Herbal Teas">Herbal Teas</option>
+    <option value="Other items">Other items</option>
    </select>
    <br>
    <h3><input type="radio" value="both" name="search method">Both</h3>
@@ -53,7 +54,7 @@
    {% set cnt={'val':1} %}
    {% for i in results %}
    <tr>
-     <td>{{cnt['val']}}</td> <td>{{i[1]}}</td>  <td>{{i[2]}}</td> <td>₹ {{i[3]}}</td>
+     <td>{{cnt['val']}}</td> <td>{{i[1]}}</td>  <td>{{i[2]}}</td> <td>£ {{i[3]}}</td>
     <td><a href="/viewproduct/{{i[0]}}">View</a></td>
    </tr>
    {% if cnt.update({'val':(cnt['val']+1)}) %}{% endif %}
