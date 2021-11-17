@@ -74,8 +74,8 @@ div.nav a{
 .press a{
   background-color: rgba(3, 22, 32, 0.308);
   border-radius: 0.5vw;
-  padding: 1vw;
-  width: 13vw;
+  padding: 0.5vw;
+  width: 11vw;
   display: block;
   margin: auto;
   text-decoration: none;
