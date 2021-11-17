@@ -20,7 +20,7 @@ def signup():
     if request.method == "POST":
         data = request.form
         ok = add_user(data)
-        if ok:
+        if ok == 1:
             return render_template("success_signup.html")
         return render_template("signup.html", ok=ok)
     return render_template("signup.html", ok=True)

@@ -1,52 +1,66 @@
 import sqlite3
+db = "shopdata.db"
+# db = "onlineshop.db"
 
 
 def gen_custID():
-    conn = sqlite3.connect("OnlineShop/onlineshop.db")
+    conn = sqlite3.connect("OnlineShop/" + db)
     cur = conn.cursor()
     cur.execute("UPDATE metadata SET custnum = custnum + 1")
     conn.commit()
-    custnum = str([i for i in cur.execute("SELECT custnum FROM metadata")][0][0])
+    try:
+        custnum = str([i for i in cur.execute("SELECT custnum FROM metadata")][0][0])
+    except:
+        custnum = '1'
     conn.close()
     id = "CID" + "0" * (7 - len(custnum)) + custnum
     return id
 
 
 def gen_sellID():
-    conn = sqlite3.connect("OnlineShop/onlineshop.db")
+    conn = sqlite3.connect("OnlineShop/" + db)
     cur = conn.cursor()
     cur.execute("UPDATE metadata SET sellnum = sellnum + 1")
     conn.commit()
-    sellnum = str([i for i in cur.execute("SELECT sellnum FROM metadata")][0][0])
+    try:
+        sellnum = str([i for i in cur.execute("SELECT sellnum FROM metadata")][0][0])
+    except:
+        sellnum = '1'
     conn.close()
     id = "SID" + "0" * (7 - len(sellnum)) + sellnum
     return id
 
 
 def gen_prodID():
-    conn = sqlite3.connect("OnlineShop/onlineshop.db")
+    conn = sqlite3.connect("OnlineShop/" + db)
     cur = conn.cursor()
     cur.execute("UPDATE metadata SET prodnum = prodnum + 1")
     conn.commit()
-    prodnum = str([i for i in cur.execute("SELECT prodnum FROM metadata")][0][0])
+    try:
+        prodnum = str([i for i in cur.execute("SELECT prodnum FROM metadata")][0][0])
+    except:
+        prodnum = '1'
     conn.close()
     id = "PID" + "0" * (7 - len(prodnum)) + prodnum
     return id
 
 
 def gen_orderID():
-    conn = sqlite3.connect("OnlineShop/onlineshop.db")
+    conn = sqlite3.connect("OnlineShop/" + db)
     cur = conn.cursor()
     cur.execute("UPDATE metadata SET ordernum = ordernum + 1")
     conn.commit()
-    ordernum = str([i for i in cur.execute("SELECT ordernum FROM metadata")][0][0])
+    try:
+        ordernum = str([i for i in cur.execute("SELECT ordernum FROM metadata")][0][0])
+    except:
+        ordernum = '1'
     conn.close()
     id = "OID" + "0" * (7 - len(ordernum)) + ordernum
     return id
 
 
 def add_user(data):
-    conn = sqlite3.connect("OnlineShop/onlineshop.db")
+    conn = sqlite3.connect("OnlineShop/" + db)
     cur = conn.cursor()
     email = data["email"]
     if data['type'] == "Customer":
@@ -54,7 +68,7 @@ def add_user(data):
     elif data['type'] == "Seller":
         a = cur.execute("SELECT * FROM seller WHERE email=?", (email,))
     if len(list(a)) != 0:
-        return False
+        return 0
     tup = (data["name"],
            data["email"],
            data["phone"],
@@ -68,14 +82,16 @@ def add_user(data):
     if data['type'] == "Customer":
         cur.execute("INSERT INTO customer VALUES (?,?,?,?,?,?,?,?,?,?,?)", (gen_custID(), *tup))
     elif data['type'] == "Seller":
+        if 'admin' not in data["name"].lower():
+            return 2
         cur.execute("INSERT INTO seller VALUES (?,?,?,?,?,?,?,?,?,?,?)", (gen_sellID(), *tup))
     conn.commit()
     conn.close()
-    return True
+    return 1
 
 
 def auth_user(data):
-    conn = sqlite3.connect("OnlineShop/onlineshop.db")
+    conn = sqlite3.connect("OnlineShop/" + db)
     cur = conn.cursor()
     type = data["type"]
     email = data["email"]
@@ -92,7 +108,7 @@ def auth_user(data):
 
 
 def fetch_details(userid, type):
-    conn = sqlite3.connect("OnlineShop/onlineshop.db")
+    conn = sqlite3.connect("OnlineShop/" + db)
     cur = conn.cursor()
     if type == "Customer":
         a = cur.execute("SELECT * FROM customer WHERE custID=?", (userid,))
@@ -108,7 +124,7 @@ def fetch_details(userid, type):
 
 
 def search_users(search, srch_type):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     search = "%" + search + "%"
     if srch_type == "Customer":
@@ -125,7 +141,7 @@ def search_users(search, srch_type):
 
 
 def update_details(data, userid, type):
-    conn = sqlite3.connect("OnlineShop/onlineshop.db")
+    conn = sqlite3.connect("OnlineShop/" + db)
     cur = conn.cursor()
     if type == "Customer":
         cur.execute(
@@ -154,7 +170,7 @@ def update_details(data, userid, type):
 
 
 def check_psswd(psswd, userid, type):
-    conn = sqlite3.connect("OnlineShop/onlineshop.db")
+    conn = sqlite3.connect("OnlineShop/" + db)
     cur = conn.cursor()
     if type == "Customer":
         a = cur.execute("SELECT password FROM customer WHERE custID=?", (userid,))
@@ -166,7 +182,7 @@ def check_psswd(psswd, userid, type):
 
 
 def set_psswd(psswd, userid, type):
-    conn = sqlite3.connect("OnlineShop/onlineshop.db")
+    conn = sqlite3.connect("OnlineShop/" + db)
     cur = conn.cursor()
     if type == "Customer":
         a = cur.execute("UPDATE customer SET password=? WHERE custID=?", (psswd, userid))
@@ -177,7 +193,7 @@ def set_psswd(psswd, userid, type):
 
 
 def add_prod(sellID, data):
-    conn = sqlite3.connect("OnlineShop/onlineshop.db")
+    conn = sqlite3.connect("OnlineShop/" + db)
     cur = conn.cursor()
     prodID = gen_prodID()
     tup = (prodID,
@@ -194,7 +210,7 @@ def add_prod(sellID, data):
 
 
 def get_categories(sellID):
-    conn = sqlite3.connect("OnlineShop/onlineshop.db")
+    conn = sqlite3.connect("OnlineShop/" + db)
     cur = conn.cursor()
     a = cur.execute("SELECT DISTINCT(category) from product where sellID=?", (sellID,))
     categories = [i[0] for i in a]
@@ -203,7 +219,7 @@ def get_categories(sellID):
 
 
 def search_myproduct(sellID, srchBy, category, keyword):
-    conn = sqlite3.connect("OnlineShop/onlineshop.db")
+    conn = sqlite3.connect("OnlineShop/" + db)
     cur = conn.cursor()
     keyword = ['%' + i + '%' for i in keyword.split()]
     if len(keyword) == 0: keyword.append('%%')
@@ -234,7 +250,7 @@ def search_myproduct(sellID, srchBy, category, keyword):
 
 
 def get_product_info(id):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     a = cur.execute("""SELECT p.name, p.quantity, p.category, p.cost_price, p.sell_price,
                     p.sellID, p.description, s.name FROM product p JOIN seller s
@@ -247,7 +263,7 @@ def get_product_info(id):
 
 
 def update_product(data, id):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     cur.execute("""UPDATE product
     SET name=?, quantity=?, category=?, cost_price=?,
@@ -264,7 +280,7 @@ def update_product(data, id):
 
 
 def search_products(srchBy, category, keyword):
-    conn = sqlite3.connect("OnlineShop/onlineshop.db")
+    conn = sqlite3.connect("OnlineShop/" + db)
     cur = conn.cursor()
     keyword = ['%' + i + '%' for i in keyword.split()]
     if len(keyword) == 0: keyword.append('%%')
@@ -295,7 +311,7 @@ def search_products(srchBy, category, keyword):
 
 
 def get_seller_products(sellID):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     a = cur.execute("SELECT prodID, name, category, sell_price FROM product WHERE sellID=? AND quantity!=0", (sellID,))
     res = [i for i in a]
@@ -304,7 +320,7 @@ def get_seller_products(sellID):
 
 
 def place_order(prodID, custID, qty):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     orderID = gen_orderID()
     cur.execute("""INSERT INTO orders
@@ -315,31 +331,31 @@ def place_order(prodID, custID, qty):
 
 
 def cust_orders(custID):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     a = cur.execute("""SELECT o.orderID, o.prodID, p.name, o.quantity, o.sell_price, o.date, o.status
-                       FROM orders o JOIN product p
-                       WHERE o.prodID=p.prodID AND o.custID=? AND o.status!='RECIEVED'
-                       ORDER BY o.date DESC """, (custID,))
+                           FROM orders o JOIN product p
+                           WHERE o.prodID=p.prodID AND o.custID=? AND o.status!='RECIEVED'
+                           ORDER BY o.date DESC """, (custID,))
     res = [i for i in a]
     conn.close()
     return res
 
 
 def sell_orders(sellID):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
-    a = cur.execute(""" SELECT o.orderID, o.prodID, p.name, o.quantity, p.quantity, o.cost_price, o.date, o.status
-                        FROM orders o JOIN product p
-                        WHERE o.prodID=p.prodID AND p.sellID=? AND o.status!='RECIEVED'
-                        ORDER BY o.date DESC """, (sellID,))
+    a = cur.execute(""" SELECT o.orderID, o.prodID, p.name, o.quantity, p.quantity, o.cost_price, o.date, o.status, o.custID, c.name
+                            FROM orders o JOIN product p JOIN customer c
+                            WHERE o.prodID=p.prodID AND o.custID=c.custID AND p.sellID=?
+                            ORDER BY o.date DESC """, (sellID,))
     res = [i for i in a]
     conn.close()
     return res
 
 
 def get_order_details(orderID):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     a = cur.execute(""" SELECT o.custID, p.sellID, o.status FROM orders o JOIN product p
                         WHERE o.orderID=? AND o.prodID=p.prodID """, (orderID,))
@@ -349,7 +365,7 @@ def get_order_details(orderID):
 
 
 def change_order_status(orderID, new_status):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     cur.execute("UPDATE orders SET status=? WHERE orderID=? ", (new_status, orderID))
     if new_status == 'DISPACHED':
@@ -361,11 +377,11 @@ def change_order_status(orderID, new_status):
 
 
 def cust_purchases(custID):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     a = cur.execute("""SELECT o.prodID, p.name, o.quantity, o.sell_price, o.date
                        FROM orders o JOIN product p
-                       WHERE o.prodID=p.prodID AND o.custID=? AND o.status='RECIEVED'
+                       WHERE o.prodID=p.prodID AND o.custID=? AND o.status!='CANCELLED'
                        ORDER BY o.date DESC """, (custID,))
     res = [i for i in a]
     conn.close()
@@ -373,7 +389,7 @@ def cust_purchases(custID):
 
 
 def sell_sales(sellID):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     a = cur.execute("""SELECT o.prodID, p.name, o.quantity, o.sell_price, o.date, o.custID, c.name
                        FROM orders o JOIN product p JOIN customer c
@@ -385,7 +401,7 @@ def sell_sales(sellID):
 
 
 def add_product_to_cart(prodID, custID):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     cur.execute("""INSERT INTO cart VALUES (?,?,1) """, (custID, prodID))
     conn.commit()
@@ -393,7 +409,7 @@ def add_product_to_cart(prodID, custID):
 
 
 def get_cart(custID):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     a = cur.execute("""SELECT p.prodID, p.name, p.sell_price, c.sum_qty, p.quantity
                        FROM (SELECT custID, prodID, SUM(quantity) AS sum_qty FROM cart
@@ -405,7 +421,7 @@ def get_cart(custID):
 
 
 def update_cart(custID, qty):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     for prodID in qty:
         cur.execute("DELETE FROM cart WHERE prodID=? AND custID=?", (prodID, custID))
@@ -415,7 +431,7 @@ def update_cart(custID, qty):
 
 
 def cart_purchase(custID):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     cart = get_cart(custID)
     for item in cart:
@@ -431,14 +447,14 @@ def cart_purchase(custID):
 
 
 def empty_cart(custID):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     cur.execute("DELETE FROM cart WHERE custID=?", (custID,))
     conn.commit()
 
 
 def remove_from_cart(custID, prodID):
-    conn = sqlite3.connect('OnlineShop/onlineshop.db')
+    conn = sqlite3.connect('OnlineShop/' + db)
     cur = conn.cursor()
     cur.execute("DELETE FROM cart WHERE custID=? AND prodID=?", (custID, prodID))
     conn.commit()

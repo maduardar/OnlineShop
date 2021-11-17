@@ -1,0 +1,61 @@
+CREATE TABLE cart(
+custID varchar(10) NOT NULL ,
+prodID varchar(10) NOT NULL ,
+quantity integer NOT NULL CHECK(quantity>0)
+)
+
+CREATE TABLE customer(
+custID varchar(10) PRIMARY KEY,
+name varchar(30) NOT NULL,
+email varchar(30) UNIQUE,
+phone varchar(13) NOT NULL,
+area varchar(20) NOT NULL,
+locality varchar(20) NOT NULL,
+city varchar(20) NOT NULL,
+state varchar(20) NOT NULL,
+country varchar(20) NOT NULL,
+zipcode varchar(6) NOT NULL,
+password varchar(20) NOT NULL)
+
+CREATE TABLE metadata(
+custnum integer NOT NULL ,
+sellnum integer NOT NULL ,
+prodnum integer NOT NULL ,
+profit_rate decimal(6,3) NOT NULL , ordernum integer NOT NULL DEFAULT 0)
+
+CREATE TABLE orders(
+orderID varchar(10) PRIMARY KEY,
+custID REFERENCES customer(custID),
+prodID REFERENCES product(prodID),
+quantity integer check(quantity>=1),
+date datetime not null,
+cost_price decimal(9,2) NOT NULL,
+sell_price decimal(9,2) NOT NULL,
+status varchar(15) NOT NULL,
+CHECK (cost_price < sell_price )
+)
+
+CREATE TABLE product(
+prodID varchar(10) PRIMARY KEY,
+name varchar(30) NOT NULL,
+quantity integer CHECK(quantity>=0) NOT NULL,
+category varchar(30) NOT NULL ,
+cost_price decimal(9,2) NOT NULL,
+sell_price decimal(9,2) NOT NULL,
+description varchar(100),
+sellID varchar(10) REFERENCES seller (sellID),
+CHECK (sell_price>cost_price)
+)
+
+CREATE TABLE "seller"(
+sellID varchar(10) PRIMARY KEY,
+name varchar(30) NOT NULL,
+email varchar(30) UNIQUE,
+phone varchar(13) NOT NULL,
+area varchar(20) NOT NULL,
+locality varchar(20) NOT NULL,
+city varchar(20) NOT NULL,
+state varchar(20) NOT NULL,
+country varchar(20) NOT NULL,
+zipcode varchar(6) NOT NULL,
+password varchar(20) NOT NULL)
