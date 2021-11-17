@@ -24,7 +24,6 @@ function isAlpha(str){
 
 function validateForm(){
   var phone = document.getElementById("phone").value;
-  var zip = document.getElementById("zip").value;
   var address = document.getElementsByClassName("address");
   var place = document.getElementsByClassName("place");
 
@@ -45,20 +44,11 @@ function validateForm(){
       alert("Invalid "+place[i].name+"!");
       return false;}
   }
-
-  if(isNumeric(zip)==false){
-    alert("Invalid Zipcode!");
-    return false;}
 }
 
 function checkEqual(){
-  var zip = document.getElementsByName("zip")[0].value;
   var pass = document.getElementsByName("password")[0].value;
   var cnfrm_pass = document.getElementsByName("cnfrm_psswd")[0].value;
-
-  if(isNumeric(zip)==false){
-    alert("Invalid Zipcode!");
-    return false;}
 
   if(pass!==cnfrm_pass){
     alert("Password and Confirm Password fields don't match");
